@@ -18,15 +18,30 @@ Basic config, here `fceux` is set as emulator, you can choose your own.
 
 ## Commands
 
-`:NesBuild` - compile + link;
-`:NesRun` - compile + link + run;
-`:NesClean` - remove `*.o` and `*.nes` files.
+- `:NesBuild` - compile + link;
+- `:NesRun` - compile + link + run;
+- `:NesClean` - remove `*.o` and `*.nes` files.
 
 ## Keymaps (asm\_ca65)
 
-`<leader>b` - build
-`<leader>r` - run
-`<leader>x` - clean
+- `<leader>b` - build
+- `<leader>r` - run
+- `<leader>x` - clean
+
+Or you can defined own keys in plugin's config, like:
+
+```lua
+{
+  "dknight/nes.nvim",
+  name = "nes.nvim",
+
+  opts = {
+    -- ...
+    build_key = "<F6>",
+    run_key = "<F7>",
+    clean_key = "<F10>",
+  },
+```
 
 ## Configuration (Optional)
 
