@@ -63,9 +63,5 @@ Configuration can be override on plugin initialization.
     run_key = "<leader>r",
     clean_key = "<leader>x",
   },
-
-  config = function(_, opts)
-    require("nes").setup(opts)
-  end,
 }
 ```
