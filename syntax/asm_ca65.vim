@@ -6,6 +6,8 @@ if exists("b:current_syntax")
   finish
 endif
 
+syntax case ignore
+
 " Base: standard syntax extension
 runtime! syntax/asm.vim
 
@@ -160,4 +162,7 @@ syntax keyword nesAPUSymbol SQ1_VOL SQ1_SWEEP SQ1_LO SQ1_HI SQ2_VOL SQ2_SWEEP SQ
 highlight link nesAPUSymbol Identifier
 
 " ----------------------------------------------------------------------------
+
+syntax case match
+
 let b:current_syntax = "asm_ca65"
