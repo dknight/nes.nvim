@@ -44,8 +44,10 @@ function NESPlugin.setup(opts)
 end
 
 function NESPlugin.load_snippets()
-	local ok, from_lua = pcall(require, "luasnip.loaders.from_lua")
-	if not ok then return end
+	local ok, _ = pcall(require, "luasnip.loaders.from_lua")
+	if not ok then
+		return
+	end
 
 	local plugin_root = vim.fn.fnamemodify(
 		debug.getinfo(1, "S").source:sub(2),
@@ -54,7 +56,7 @@ function NESPlugin.load_snippets()
 
 	local path = plugin_root .. "/lua/nes/snippets"
 
-	from_lua.load({
+	require("luasnip.loaders.from_lua").lazy_load({
 		paths = path,
 	})
 end
