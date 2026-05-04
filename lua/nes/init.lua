@@ -38,30 +38,21 @@ function NESPlugin.setup(opts)
 	pcall(function()
 		require("nes.commands").setup()
 	end)
-	vim.api.nvim_create_autocmd("FileType", {
-		pattern = "asm_ca65",
-		callback = function()
-			require("nes").load_snippets()
-		end,
-	})
+
+	vim.schedule(function()
+		require("nes").load_snippets()
+	end)
 end
 
 function NESPlugin.load_snippets()
-	local ok_loader, loader = pcall(require, "luasnip.loaders.from_lua")
-	if not ok_loader then
-		vim.notify("LuaSnip loader not found", vim.log.levels.WARN)
+	local ok, from_lua = pcall(require, "luasnip.loaders.from_lua")
+	if not ok then
+		vim.notify("LuaSnip not installed", vim.log.levels.WARN)
 		return
 	end
 
-	local plugin_root = vim.fn.fnamemodify(
-		debug.getinfo(1, "S").source:sub(2),
-		":p:h:h:h"
-	)
-
-	local path = plugin_root .. "/lua/nes/snippets"
-
-	loader.load({
-		paths = path,
+	from_lua.load({
+		paths = vim.fn.stdpath("config") .. "/lua/nes/snippets",
 	})
 end
 
