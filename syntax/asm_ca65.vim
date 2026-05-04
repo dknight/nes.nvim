@@ -75,6 +75,10 @@ syntax keyword ca65Opcode
   \ CLC CLD CLI CLV CMP CPX CPY DEC DEX DEY EOR INC INX INY
   \ JMP JSR LDA LDX LDY LSR NOP ORA PHA PHP PLA PLP ROL ROR
   \ RTI RTS SBC SEC SED SEI STA STX STY TAX TAY TSX TXA TXS TYA
+  \ adc and asl bcc bcs beq bit bmi bne bpl brk bvc bvs
+  \ clc cld cli clv cmp cpx cpy dec dex dey eor inc inx iny
+  \ jmp jsr lda ldx ldy lsr nop ora pha php pla plp rol ror
+  \ rti rts sbc sec sed sei sta stx sty tax tay tsx txa txs tya
 
 highlight link ca65Opcode Statement
 
@@ -149,7 +153,9 @@ highlight link nesPPURegister Special
 " ----------------------------------------------------------------------------
 " Symbolic names
 " ----------------------------------------------------------------------------
-syntax keyword nesPPUSymbol PPUCTRL PPUMASK PPUSTATUS OAMADDR OAMDATA PPUSCROLL PPUADDR PPUDATA
+syntax keyword nesPPUSymbol
+	\ PPUCTRL PPUMASK PPUSTATUS OAMADDR OAMDATA PPUSCROLL PPUADDR PPUDATA
+	\ ppuctrl ppumask ppustatus oamaddr oamdata ppuscroll ppuaddr ppudata
 highlight link nesPPUSymbol Identifier
 
 " ----------------------------------------------------------------------------
@@ -158,7 +164,13 @@ highlight link nesPPUSymbol Identifier
 syntax match nesAPURegister "\$40[0-1][0-9A-Fa-f]"
 highlight link nesAPURegister Special
 
-syntax keyword nesAPUSymbol SQ1_VOL SQ1_SWEEP SQ1_LO SQ1_HI SQ2_VOL SQ2_SWEEP SQ2_LO SQ2_HI TRI_LINEAR TRI_LO TRI_HI NOISE_VOL NOISE_LO NOISE_HI DMC_FREQ DMC_RAW DMC_START DMC_LEN OAMDMA JOY1 JOY2 APUSTATUS
+syntax keyword nesAPUSymbol
+	\ SQ1_VOL SQ1_SWEEP SQ1_LO SQ1_HI SQ2_VOL SQ2_SWEEP SQ2_LO SQ2_HI
+	\ TRI_LINEAR TRI_LO TRI_HI NOISE_VOL NOISE_LO NOISE_HI DMC_FREQ DMC_RAW 
+	\ DMC_START DMC_LEN OAMDMA JOY1 JOY2 APUSTATUS
+	\ sq1_vol sq1_sweep sq1_lo sq1_hi sq2_vol sq2_sweep sq2_lo sq2_hi
+	\ tri_linear tri_lo tri_hi noise_vol noise_lo noise_hi dmc_freq dmc_raw 
+	\ dmc_start dmc_len oamdma joy1 joy2 apustatus
 highlight link nesAPUSymbol Identifier
 
 " ----------------------------------------------------------------------------

@@ -36,4 +36,21 @@ function NESPlugin.setup(opts)
 	pcall(function() require("nes.commands").setup() end)
 end
 
+function NESPlugin.load_snippets()
+	local ok, _ = pcall(require, "luasnip")
+	if not ok then
+		return
+	end
+
+	local root = vim.fn.fnamemodify(
+		debug.getinfo(1, "S").source:sub(2),
+		":h:h"
+	)
+	local path = root .. "/snippets"
+
+	require("luasnip.loaders.from_lua").load({
+		paths = path,
+	})
+end
+
 return NESPlugin
