@@ -22,9 +22,7 @@ local function load_from_lazy()
 end
 
 function NESPlugin.setup(opts)
-	if initialized then
-		return
-	end
+	if initialized then return end
 	initialized = true
 
 	if not opts then
@@ -32,31 +30,36 @@ function NESPlugin.setup(opts)
 	end
 
 	require("nes.config").setup(opts)
+
 	pcall(function()
 		require("nes.ft").setup(opts)
 	end)
+
 	pcall(function()
 		require("nes.commands").setup()
 	end)
-	pcall(function()
-		require("nes").load_snippets()
-	end)
+	vim.api.nvim_create_autocmd("VimEnter", {
+		callback = function()
+			require("nes").load_snippets()
+		end,
+	})
 end
 
 function NESPlugin.load_snippets()
-	local ok, _ = pcall(require, "luasnip.loaders.from_lua")
-	if not ok then
+	local ok_loader, loader = pcall(require, "luasnip.loaders.from_lua")
+	if not ok_loader then
+		vim.notify("LuaSnip loader not found", vim.log.levels.WARN)
 		return
 	end
 
 	local plugin_root = vim.fn.fnamemodify(
 		debug.getinfo(1, "S").source:sub(2),
-		":h:h:h"
+		":p:h:h:h"
 	)
 
 	local path = plugin_root .. "/lua/nes/snippets"
 
-	require("luasnip.loaders.from_lua").lazy_load({
+	loader.load({
 		paths = path,
 	})
 end
