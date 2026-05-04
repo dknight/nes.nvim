@@ -1,6 +1,7 @@
 # nes.nvim
 
-Simple Neovim plugin for building and running NES (6502, ca65) projects.
+Simple Neovim plugin for building and running NES or Famicom (6502)
+projects.
 
 ## Installation (lazy.nvim)
 
