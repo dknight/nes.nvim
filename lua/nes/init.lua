@@ -38,7 +38,8 @@ function NESPlugin.setup(opts)
 	pcall(function()
 		require("nes.commands").setup()
 	end)
-	vim.api.nvim_create_autocmd("VimEnter", {
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = "asm_ca65",
 		callback = function()
 			require("nes").load_snippets()
 		end,
