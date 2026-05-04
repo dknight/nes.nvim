@@ -12,7 +12,11 @@ Basic config, here `fceux` is set as emulator, you can choose your own.
   name = "nes.nvim",
   opts = {
     emulator = "fceux", -- or your own emulator
-  }
+  },
+  -- If you wish to use snippets.
+  dependencies = {
+    "L3MON4D3/LuaSnip",
+  },
 }
 ```
 
@@ -52,6 +56,10 @@ Configuration can be override on plugin initialization.
   "dknight/nes.nvim",
   name = "nes.nvim",
   ft = { "asm_ca65" },
+  dependencies = {
+    "L3MON4D3/LuaSnip",
+  },
+
   cmd = { "NesBuild", "NesRun", "NesClean" },
 
   opts = {
