@@ -48,15 +48,8 @@ function NESPlugin.load_snippets()
 	local ok, loader = pcall(require, "luasnip.loaders.from_lua")
 	if not ok then return end
 
-	local rtp = vim.api.nvim_get_runtime_file("lua/nes/snippets", true)[1]
-
-	if not rtp then
-		vim.notify("NES snippets not found in runtimepath", vim.log.levels.WARN)
-		return
-	end
-
 	loader.load({
-		paths = rtp,
+		paths = vim.fn.stdpath("data") .. "/lazy/nes.nvim/lua/nes/snippets",
 	})
 end
 
