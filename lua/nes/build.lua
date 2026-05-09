@@ -189,10 +189,8 @@ end
 function Builder.clean()
 	local base = vim.fn.expand("%:r")
 
-	local removed = {
-		safe_remove(base .. ".o"),
-		safe_remove(base .. ".nes"),
-	}
+	safe_remove(base .. ".o")
+	safe_remove(base .. ".nes")
 
 	vim.notify("Clean complete", vim.log.levels.INFO, { title = "NES" })
 end
