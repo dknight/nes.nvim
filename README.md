@@ -64,6 +64,7 @@ Configuration can be override on plugin initialization.
   cmd = { "NesBuild", "NesRun", "NesClean" },
 
   opts = {
+    save_before_compile = true,
     compiler = "ca65",
     linker = "cl65",
     emulator = "fceux",

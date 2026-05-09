@@ -6,6 +6,7 @@ function Config.setup(opts)
 	if options then return end
 
 	options = vim.tbl_deep_extend("force", {
+		save_before_compile = true,
 		compiler = "ca65",
 		linker = "cl65",
 		emulator = "fceux",

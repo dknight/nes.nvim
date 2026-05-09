@@ -85,8 +85,27 @@ function Builder.compile(cb)
 	local file = vim.fn.expand("%")
 	local base = vim.fn.expand("%:r")
 
+	if opts.save_before_compile then
+		for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+			if vim.api.nvim_buf_is_valid(buf)
+				and vim.api.nvim_buf_get_option(buf, "modified")
+			then
+				local name = vim.api.nvim_buf_get_name(buf)
+
+				if name:match("%.s$") then
+					vim.api.nvim_buf_call(buf, function()
+						vim.cmd("write")
+					end)
+				end
+			end
+		end
+	end
+
 	if vim.fn.executable(opts.compiler) == 0 then
-		notify("Compiler not found: " .. opts.compiler, vim.log.levels.ERROR)
+		notify(
+			"Compiler not found: " .. opts.compiler,
+			vim.log.levels.ERROR
+		)
 		return
 	end
 
