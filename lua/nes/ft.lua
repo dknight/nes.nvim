@@ -4,7 +4,7 @@ function FileType.setup(opts)
 	vim.api.nvim_create_autocmd("FileType", {
 		pattern = "asm_ca65",
 		callback = function(args)
-			vim.opt_local.commentstring = "; %s"
+			vim.bo[args.buf].commentstring = "; %s"
 			vim.cmd("setlocal syntax=asm_ca65")
 			vim.api.nvim_set_hl(0, "asm_ca65HexNumber", { link = "Number" })
 			vim.api.nvim_set_hl(0, "nesPPURegister", { fg = "#ff6b6b" })
