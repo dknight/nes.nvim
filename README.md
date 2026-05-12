@@ -1,6 +1,6 @@
 # nes.nvim
 
-![https://raw.githubusercontent.com/dknight/nes.nvim/refs/heads/main/nesnvim.png](NES.NVIM)
+![nes.nvim logo](https://raw.githubusercontent.com/dknight/nes.nvim/refs/heads/main/nesnvim.png)
 
 Simple Neovim plugin for building and running NES or Famicom (6502)
 projects.
