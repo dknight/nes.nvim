@@ -84,6 +84,11 @@ function Builder.compile(cb)
 	local opts = config.get()
 	local file = vim.fn.expand("%")
 	local base = vim.fn.expand("%:r")
+	local build_table = { opts.compiler, file, "-o", base .. ".o" }
+
+	if opts.use_make then
+		build_table = { "make" }
+	end
 
 	if opts.save_before_compile then
 		for _, buf in ipairs(vim.api.nvim_list_bufs()) do
@@ -109,7 +114,7 @@ function Builder.compile(cb)
 		return
 	end
 
-	run({ opts.compiler, file, "-o", base .. ".o" }, {
+	run(build_table, {
 		on_exit = function(code, stdout, stderr)
 			local items = parse_ca65(stderr)
 
