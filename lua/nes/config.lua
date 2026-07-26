@@ -11,7 +11,7 @@ function Config.setup(opts)
 		linker = "cl65",
 		emulator = "fceux",
 		target = "nes",
-		use_make = true,
+		use_make = false,
 		build_key = "<F6>",
 		run_key = "<F7>",
 		clean_key = "<F10>",

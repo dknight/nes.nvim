@@ -69,6 +69,7 @@ Configuration can be override on plugin initialization.
     linker = "cl65",
     emulator = "fceux",
     target = "nes",
+    use_make = false,
     build_key = "<leader>b",
     run_key = "<leader>r",
     clean_key = "<leader>x",
