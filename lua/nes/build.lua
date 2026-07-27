@@ -57,8 +57,8 @@ local function run(cmd, opts)
 	local stderr = {}
 
 	return vim.fn.jobstart(cmd, {
-		stdout_buffered = true,
-		stderr_buffered = true,
+		stdout_buffered = false,
+		stderr_buffered = false,
 
 		on_stdout = function(_, data)
 			if data then
@@ -85,10 +85,6 @@ function Builder.compile(cb)
 	local file = vim.fn.expand("%")
 	local base = vim.fn.expand("%:r")
 	local build_table = { opts.compiler, file, "-o", base .. ".o" }
-
-	if opts.use_make then
-		build_table = { "make" }
-	end
 
 	if opts.save_before_compile then
 		for _, buf in ipairs(vim.api.nvim_list_bufs()) do
@@ -176,19 +172,28 @@ function Builder.run()
 	local opts = config.get()
 	local base = vim.fn.expand("%:r")
 
-	Builder.compile(function(ok)
-		if not ok then
-			return
-		end
-		Builder.link(function(ok2)
-			if not ok2 then
+	if opts == nil then
+		notify("No options given", vim.log.levels.ERROR)
+		return
+	end
+
+	if opts.use_make then
+		Builder.make()
+	else
+		Builder.compile(function(ok)
+			if not ok then
 				return
 			end
+			Builder.link(function(ok2)
+				if not ok2 then
+					return
+				end
 
-			notify("Running emulator...")
-			run({ opts.emulator, base .. ".nes" })
+				notify("Running emulator...")
+				run({ opts.emulator, base .. ".nes" })
+			end)
 		end)
-	end)
+	end
 end
 
 function Builder.clean()
@@ -198,6 +203,18 @@ function Builder.clean()
 	safe_remove(base .. ".nes")
 
 	vim.notify("Clean complete", vim.log.levels.INFO, { title = "NES" })
+end
+
+function Builder.make()
+	run({ "make" }, {
+		on_exit = function(_, data)
+			local out = vim.tbl_filter(function(line)
+				return line ~= ""
+			end, data)
+			notify(table.concat(out, "\n"))
+		end,
+	})
+	run({ "make", "run" }, {})
 end
 
 return Builder
