@@ -35,7 +35,7 @@ function FileType.setup(opts)
 			)
 			vim.keymap.set(
 				"n",
-				"<leader>x",
+				opts.clean_key or "<leader>x",
 				"<cmd>NesClean<cr>",
 				mergeDesc("NES Clean output files")
 			)

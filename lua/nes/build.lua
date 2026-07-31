@@ -6,6 +6,12 @@ local function notify(msg, level)
 	vim.notify(msg, level or vim.log.levels.INFO, { title = "NES" })
 end
 
+local function filter_empty_line(t)
+	return vim.tbl_filter(function(line)
+		return line ~= ""
+	end, t)
+end
+
 local function safe_remove(path)
 	if vim.fn.filereadable(path) == 1 then
 		os.remove(path)
@@ -197,10 +203,15 @@ function Builder.run()
 end
 
 function Builder.clean()
+	local opts = config.get()
 	local base = vim.fn.expand("%:r")
 
 	safe_remove(base .. ".o")
 	safe_remove(base .. ".nes")
+
+	if opts.use_make then
+		Builder.make_clean()
+	end
 
 	vim.notify("Clean complete", vim.log.levels.INFO, { title = "NES" })
 end
@@ -208,13 +219,19 @@ end
 function Builder.make()
 	run({ "make" }, {
 		on_exit = function(_, data)
-			local out = vim.tbl_filter(function(line)
-				return line ~= ""
-			end, data)
+			local out = filter_empty_line(data)
 			notify(table.concat(out, "\n"))
+		end,
+		on_stderr = function(_, data)
+			local out = filter_empty_line(data)
+			notify(table.concat(out, "\n"), vim.log.levels.ERROR)
 		end,
 	})
 	run({ "make", "run" }, {})
+end
+
+function Builder.make_clean()
+	run({ "make", "clean" })
 end
 
 return Builder
