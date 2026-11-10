@@ -7,11 +7,11 @@ function Config.setup(opts)
 
 	options = vim.tbl_deep_extend("force", {
 		save_before_compile = true,
+		use_make = true,
 		compiler = "ca65",
 		linker = "cl65",
 		emulator = "fceux",
 		target = "nes",
-		use_make = false,
 		build_key = "<F6>",
 		run_key = "<F7>",
 		clean_key = "<F10>",
