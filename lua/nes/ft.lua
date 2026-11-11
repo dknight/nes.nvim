@@ -41,6 +41,18 @@ function FileType.setup(opts)
 			)
 			vim.keymap.set(
 				"n",
+				opts.create_makefile_key or "<leader>m",
+				"<cmd>NesCreateMakefile<cr>",
+				mergeDesc("NES Creates Makefile for your project")
+			)
+			vim.keymap.set(
+				"n",
+				opts.simulate_key or "<leader>i",
+				"<cmd>Nes6502Simulate<cr>",
+				mergeDesc("Simulates program in 6502 simulator")
+			)
+			vim.keymap.set(
+				"n",
 				"]q",
 				"<cmd>cnext<cr>",
 				{ desc = "Next error" }

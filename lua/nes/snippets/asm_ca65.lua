@@ -4,7 +4,6 @@ local t = ls.text_node
 local i = ls.insert_node
 
 return {
-
 	-- Load/Store
 	s("lda", { t("LDA "), i(1) }),
 	s("ldai", { t("LDA #$"), i(1) }),
@@ -59,4 +58,24 @@ return {
 	s("cpx", { t("CPX "), i(1) }),
 	s("cpy", { t("CPY "), i(1) }),
 
+	-- Main file
+	s("main", {
+		t({
+			".export _main",
+			"",
+			'.segment "CODE"',
+			"",
+			"_main:",
+			"    LDA #$42",
+			"    STA result",
+			"    RTS",
+			"",
+			'.segment "BSS"',
+			"",
+			"result:",
+			"    .res 1",
+			"",
+		}),
+		i(1),
+	}),
 }

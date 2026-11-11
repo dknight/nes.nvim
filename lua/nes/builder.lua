@@ -151,7 +151,8 @@ local function run(cmd, opts)
 end
 
 -- Execute a Makefile target and report its output and exit status.
-local function run_make_cmd(target, cb)
+local function run_make_cmd(target, cb, args)
+	-- !!!
 	local cmd = { "make" }
 
 	if target then
@@ -202,6 +203,28 @@ local function run_emulator(path)
 	if job <= 0 then
 		notify("Failed to start emulator", vim.log.levels.ERROR)
 	end
+end
+
+-- Copy file helper
+local function copy_file(source, destination)
+	local src = io.open(source, "r")
+	if not src then
+		error("Could not open source file: " .. source)
+	end
+
+	-- Read the content of the source file
+	local content = src:read("*all")
+	src:close()
+
+	-- Open the destination file in write mode
+	local dest = io.open(destination, "w")
+	if not dest then
+		error("Could not open destination file: " .. destination)
+	end
+
+	-- Write the content to the destination file
+	dest:write(content)
+	dest:close()
 end
 
 -- Compile the current source file into an object file.
@@ -426,6 +449,17 @@ end
 -- Remove all generated files using the Makefile clean target.
 function Builder.make_clean(cb)
 	run_make_cmd("clean", cb)
+end
+
+function Builder.create_makefile()
+	copy_file("templates/Makefile.template", "Makefile")
+end
+
+function Builder.simulate(cb)
+	local buf = vim.api.nvim_get_current_buf()
+	local buf_filename = vim.api.nvim_buf_get_name(buf)
+	local cmd = string.format("SIM_SRC=%s simulate", buf_filename)
+	run_make_cmd(cmd, cb)
 end
 
 return Builder

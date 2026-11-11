@@ -12,24 +12,37 @@ vim.filetype.add({
 	},
 })
 
+local setup = require("nes").setup
+local builder = require("nes.builder")
+
 vim.api.nvim_create_user_command("NesBuild", function()
-	require("nes").setup()
-	require("nes.build").build()
+	setup()
+	builder.build()
 end, {})
 
 vim.api.nvim_create_user_command("NesRun", function()
-	require("nes").setup()
-	require("nes.build").run()
+	setup()
+	builder.run()
 end, {})
 
 vim.api.nvim_create_user_command("NesClean", function()
-	require("nes").setup()
-	require("nes.build").clean()
+	setup()
+	builder.clean()
+end, {})
+
+vim.api.nvim_create_user_command("NesCreateMakegile", function()
+	setup()
+	builder.create_makefile()
+end, {})
+
+vim.api.nvim_create_user_command("Nes6502Simulate", function()
+	setup()
+	builder.simulate()
 end, {})
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "asm_ca65",
 	callback = function()
-		require("nes").setup()
+		setup()
 	end,
 })
