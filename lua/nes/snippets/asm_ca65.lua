@@ -78,4 +78,12 @@ return {
 		}),
 		i(1),
 	}),
+
+	-- Debug
+	s("@debug", {
+		t({
+			"@debug:",
+			"\t JMP @debug",
+		})
+	}),
 }
