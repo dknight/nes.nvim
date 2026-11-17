@@ -1,26 +1,30 @@
-local build = require("nes.builder")
+local builder = require("nes.builder")
 
 local Commands = {}
 
 function Commands.setup()
 	vim.api.nvim_create_user_command("NesBuild", function()
-		build.build()
+		builder.build()
 	end, {})
 
 	vim.api.nvim_create_user_command("NesRun", function()
-		build.run()
+		builder.run()
+	end, {})
+
+	vim.api.nvim_create_user_command("NesRunDebug", function()
+		builder.run(true)
 	end, {})
 
 	vim.api.nvim_create_user_command("NesClean", function()
-		build.clean()
+		builder.clean()
 	end, {})
 
 	vim.api.nvim_create_user_command("NesCreateMakefile", function()
-		build.create_makefile()
+		builder.create_makefile()
 	end, {})
 
 	vim.api.nvim_create_user_command("Nes6502Simulate", function()
-		build.simulate()
+		builder.simulate()
 	end, {})
 end
 

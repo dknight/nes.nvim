@@ -25,6 +25,7 @@ Basic config, here `fceux` is set as emulator, you can choose your own.
 
 - `:NesBuild` - builds the project, compile -> link;
 - `:NesRun` - builds and runs the project in emulateor: compile -> link -> run;
+- `:NesRunDebug` - builds and runs the project in emulateor: compile -> link -> run with `DEBUG=1` flag;
 - `:NesClean` - remove `*.o` and `*.nes` files;
 - `:NesCreateMakefile` - generates Makefile from [template](https://github.com/dknight/nes.nvim/tree/main/templates/Makefile.template).
 - `:Nes6502Simulate` - simulates the program in 6502 simulator (sim65 is default).
@@ -33,6 +34,7 @@ Basic config, here `fceux` is set as emulator, you can choose your own.
 
 - `<leader>b` - :NesBuild
 - `<leader>r` - :NesRun
+- `<leader>d` - :NesRunDebug
 - `<leader>x` - :NesClean
 - `<leader>m` - :NesCreateMakefile
 - `<leader>i` - :Nes6502Simulate
@@ -81,11 +83,15 @@ Configuration can be override on plugin initialization.
     emulator = "fceux",
     target = "nes",
     use_make = false,
-    build_key = "<leader>b",
-    run_key = "<leader>r",
-    clean_key = "<leader>x",
-    create_makefile_key = "<leader>m",
-    simulate_key = "<leader>i",
+    build_dir = "builds",
+    target_name = "main",
+
+    run_debug_key = "<F4>",
+    run_key = "<F5>",
+    build_key = "<F6>",
+    clean_key = "<F10>",
+    create_makefile_key = "<F8>",
+    simulate_key = "<F9>",
   },
 }
 ```

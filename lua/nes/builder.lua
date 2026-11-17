@@ -1,6 +1,9 @@
-local config = require("nes.config")
-
+local Config = require("nes.config")
 local Builder = {}
+
+-- Resolve the plugin root directory.
+local source = debug.getinfo(1, "S").source:sub(2)
+local plugin_dir = vim.fn.fnamemodify(source, ":p:h:h:h")
 
 -- Display a notification with the NES plugin title.
 local function notify(msg, level)
@@ -151,13 +154,14 @@ local function run(cmd, opts)
 end
 
 -- Execute a Makefile target and report its output and exit status.
-local function run_make_cmd(target, cb, args)
-	-- !!!
+local function run_make_cmd(args, cb, debug)
 	local cmd = { "make" }
 
-	if target then
-		table.insert(cmd, target)
+	if debug then
+		table.insert(cmd, "DEBUG=1")
 	end
+
+	vim.list_extend(cmd, args or {})
 
 	run(cmd, {
 		on_exit = function(code, stdout, stderr)
@@ -188,10 +192,11 @@ local function run_make_cmd(target, cb, args)
 	})
 end
 
+
 -- Launch the configured emulator as a detached process.
 local function run_emulator(path)
 	local job = vim.fn.jobstart({
-		config.get().emulator,
+		Config.get().emulator,
 		path,
 	}, {
 		detach = true,
@@ -202,7 +207,11 @@ local function run_emulator(path)
 
 	if job <= 0 then
 		notify("Failed to start emulator", vim.log.levels.ERROR)
+		return false
 	end
+
+	notify("Running emulator...")
+	return true
 end
 
 -- Copy file helper
@@ -229,7 +238,7 @@ end
 
 -- Compile the current source file into an object file.
 function Builder.compile(cb, project)
-	local opts = config.get()
+	local opts = Config.get()
 	project = project or get_project()
 
 	if not project then
@@ -266,7 +275,7 @@ end
 
 -- Link the compiled object file into an NES ROM.
 function Builder.link(cb, project)
-	local opts = config.get()
+	local opts = Config.get()
 	project = project or get_project()
 
 	if not project then
@@ -316,7 +325,7 @@ end
 
 -- Save buffers and build the current project.
 function Builder.build()
-	local opts = config.get()
+	local opts = Config.get()
 
 	if opts.save_before_compile then
 		if not save_buffers() then
@@ -345,8 +354,11 @@ function Builder.build()
 end
 
 -- Save buffers, build the project and launch the emulator.
-function Builder.run()
-	local opts = config.get()
+
+-- Save buffers, build the project and launch the emulator.
+function Builder.run(debug)
+	debug = debug or false
+	local opts = Config.get()
 
 	if opts.save_before_compile then
 		if not save_buffers() then
@@ -355,7 +367,7 @@ function Builder.run()
 	end
 
 	if opts.use_make then
-		Builder.make_run()
+		Builder.make_run(nil, debug)
 		return
 	end
 
@@ -375,7 +387,6 @@ function Builder.run()
 				return
 			end
 
-			notify("Running emulator...")
 			run_emulator(project.base .. ".nes")
 		end, project)
 	end, project)
@@ -383,7 +394,7 @@ end
 
 -- Remove generated object and ROM files.
 function Builder.clean()
-	local opts = config.get()
+	local opts = Config.get()
 	local project = get_project()
 
 	if not project then
@@ -403,22 +414,25 @@ function Builder.clean()
 end
 
 -- Build the project using the Makefile.
-function Builder.make(cb)
-	run_make_cmd(nil, cb)
+function Builder.make(cb, debug)
+	run_make_cmd({}, cb, debug)
 end
 
 -- Build the project and launch the configured emulator.
-function Builder.make_run(cb)
+function Builder.make_run(cb, debug)
 	Builder.make(function(ok)
 		if not ok then
 			if cb then cb(false) end
 			return
 		end
 
-		local opts = config.get()
+		local opts = Config.get()
 
 		-- Resolve the ROM path produced by the Makefile.
-		local rom = vim.fn.fnamemodify("builds/main.nes", ":p")
+		local rom = vim.fn.fnamemodify(
+			opts.build_dir .. "/" .. opts.target_name .. ".nes",
+			":p"
+		)
 
 		if vim.fn.filereadable(rom) == 0 then
 			notify("ROM not found: " .. rom, vim.log.levels.ERROR)
@@ -426,40 +440,31 @@ function Builder.make_run(cb)
 			return
 		end
 
-		local job = vim.fn.jobstart({
-			opts.emulator,
-			rom,
-		}, {
-			detach = true,
-			stdin = "null",
-			stdout = "null",
-			stderr = "null",
-		})
+		local success = run_emulator(rom)
 
-		if job <= 0 then
-			notify("Failed to start emulator", vim.log.levels.ERROR)
-			if cb then cb(false) end
-			return
-		end
-
-		if cb then cb(true) end
-	end)
+		if cb then cb(success) end
+	end, debug)
 end
 
 -- Remove all generated files using the Makefile clean target.
 function Builder.make_clean(cb)
-	run_make_cmd("clean", cb)
+	run_make_cmd({ "clean" }, cb)
 end
 
+-- Create a Makefile from the plugin template.
 function Builder.create_makefile()
-	copy_file("templates/Makefile.template", "Makefile")
+	local template = plugin_dir .. "/templates/Makefile.template"
+	copy_file(template, "Makefile")
 end
 
 function Builder.simulate(cb)
 	local buf = vim.api.nvim_get_current_buf()
 	local buf_filename = vim.api.nvim_buf_get_name(buf)
-	local cmd = string.format("SIM_SRC=%s simulate", buf_filename)
-	run_make_cmd(cmd, cb)
+
+	run_make_cmd({
+		"SIM_SRC=" .. buf_filename,
+		"simulate",
+	}, cb)
 end
 
 return Builder

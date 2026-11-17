@@ -1,5 +1,9 @@
 local Health = {}
 
+-- Resolve the plugin root directory.
+local source = debug.getinfo(1, "S").source:sub(2)
+local plugin_dir = vim.fn.fnamemodify(source, ":p:h:h:h")
+
 function Health.check()
 	local health = vim.health or require("health")
 
@@ -46,11 +50,12 @@ function Health.check()
 	----------------------------------------------------------------------
 	-- Syntax
 	----------------------------------------------------------------------
-	local syntax_path = "./syntax/asm_ca65.vim"
+	local syntax_path = plugin_dir .. "/syntax/asm_ca65.vim"
+
 	if vim.fn.filereadable(syntax_path) == 1 then
 		health.ok("Custom syntax found: asm_ca65")
 	else
-		health.warn("Custom syntax not found (syntax/asm_ca65.vim)")
+		health.warn("Custom syntax not found: " .. syntax_path)
 	end
 
 	----------------------------------------------------------------------

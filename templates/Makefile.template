@@ -5,7 +5,20 @@
 # Project
 #--------------------------------------------------------------------------
 .DEFAULT_GOAL := all
+
 TARGET ?= main
+
+#--------------------------------------------------------------------------
+# Debug
+#--------------------------------------------------------------------------
+DEBUG ?= 0
+
+CA65FLAGS :=
+ifeq ($(DEBUG),1)
+    CA65FLAGS += -D DEBUG=1
+else
+    CA65FLAGS += -D DEBUG=0
+endif
 
 #--------------------------------------------------------------------------
 # EMULATOR
@@ -44,10 +57,10 @@ $(BUILD_DIR):
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
 	@mkdir -p $(dir $@)
-	$(CA65) -g -I $(SRC_DIR) -I $(dir $<) -o $@ $<
+	$(CA65) $(CA65FLAGS) -g -I $(SRC_DIR) -I $(dir $<) -o $@ $<
 
 $(ROM): $(OBJ)
-	$(LD65) -C $(CFG) -o $@ --dbgfile $@.dbg $^
+	$(LD65) -C $(CFG) -o $@ --dbgfile $@.dbg --mapfile $@.map $^
 
 #--------------------------------------------------------------------------
 # 6502 simulation
@@ -72,11 +85,13 @@ simulate: $(SIM_BIN)
 	echo "Program exited with code: $$status"; \
 	exit 0
 
-.PHONY: all run clean simulate
+.PHONY: all run clean simulate map
 
 #--------------------------------------------------------------------------
 # Goals
 #--------------------------------------------------------------------------
+map: $(ROM)
+	@cat $(ROM).map || echo "Run 'make' to generate build project with map"
 
 run: $(ROM)
 	$(EMU) $(ROM)

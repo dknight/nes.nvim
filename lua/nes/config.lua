@@ -12,10 +12,14 @@ function Config.setup(opts)
 		linker = "cl65",
 		emulator = "fceux",
 		target = "nes",
+		build_dir = "builds",
+		target_name = "main",
+
 		build_key = "<leader>b",
 		run_key = "<leader>r",
+		run_debug_key = "<leader>d",
 		clean_key = "<leader>x",
-		create_makefile = "<leader>x",
+		create_makefile_key = "<leader>m",
 		simulate_key = "<leader>i",
 	}, opts or {})
 end

@@ -30,14 +30,8 @@ function NESPlugin.setup(opts)
 	end
 
 	require("nes.config").setup(opts)
-
-	pcall(function()
-		require("nes.ft").setup(opts)
-	end)
-
-	pcall(function()
-		require("nes.commands").setup()
-	end)
+	require("nes.ft").setup()
+	require("nes.commands").setup()
 
 	vim.schedule(function()
 		require("nes").load_snippets()
