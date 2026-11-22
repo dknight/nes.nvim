@@ -83,7 +83,7 @@ Configuration can be override on plugin initialization.
     emulator = "fceux",
     target = "nes",
     use_make = false,
-    build_dir = "builds",
+    build_dir = "build",
     target_name = "main",
 
     run_debug_key = "<F4>",

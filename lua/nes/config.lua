@@ -12,7 +12,7 @@ function Config.setup(opts)
 		linker = "cl65",
 		emulator = "fceux",
 		target = "nes",
-		build_dir = "builds",
+		build_dir = "build",
 		target_name = "main",
 
 		build_key = "<leader>b",
